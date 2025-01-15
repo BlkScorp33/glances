@@ -1,0 +1,20 @@
+services:
+## Glances
+  glances:
+    image: nicolargo/glances:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+#      - /run/user/1000/podman/podman.sock:/run/user/1000/podman/podman.sock:ro
+    environment:
+      - GLANCES_OPT=-w
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.glances.rule=Host(`glances.$MY_DOMAIN`)"
+      - "traefik.http.routers.glances.entrypoints=websecure"
+      - "traefik.http.routers.glances.tls.certresolver=myresolver"
+      
+    ports:
+      - "61208:61208"
+      - "61209:61209"
+    pid: host
+    restart: unless-stopped
